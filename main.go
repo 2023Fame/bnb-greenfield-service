@@ -10,8 +10,6 @@ import (
 // main.go
 
 func main() {
-	// init config
-	config.Init()
 
 	client := storageclient.NewClient(config.PrivateKey, config.ChainId, config.RpcAddr)
 

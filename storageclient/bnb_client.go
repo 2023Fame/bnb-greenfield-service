@@ -6,19 +6,22 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"file-service/models"
-	"file-service/util"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"log/slog"
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/bnb-chain/greenfield-go-sdk/client"
 	"github.com/bnb-chain/greenfield-go-sdk/types"
 	storageTypes "github.com/bnb-chain/greenfield/x/storage/types"
 	"github.com/gin-gonic/gin"
-	"io"
-	"io/ioutil"
-	"log"
-	"os"
-	"path/filepath"
-	"time"
+
+	"file-service/models"
+	"file-service/util"
 )
 
 type BNBClient struct {
@@ -31,7 +34,7 @@ type BNBClient struct {
 }
 
 func NewClient(privateKey string, chainId string, rpcAddr string) *BNBClient {
-	account, err := types.NewAccountFromPrivateKey("test", privateKey)
+	account, err := types.NewAccountFromPrivateKey("hiro", privateKey)
 	util.HandleErr(err, "New account from private key error")
 
 	cli, err := client.New(chainId, rpcAddr, client.Option{DefaultAccount: account})
@@ -45,6 +48,7 @@ func NewClient(privateKey string, chainId string, rpcAddr string) *BNBClient {
 	// get storage providers list
 	ctx := context.Background() // Create a background context, can be replaced with a more relevant context if necessary
 	spLists, err := c.cli.ListStorageProviders(ctx, true)
+	slog.Debug("splists", spLists)
 	util.HandleErr(err, "fail to list in service sps")
 
 	// choose the first sp to be the primary SP
